@@ -4,6 +4,7 @@ var app = express();
 var bodyParser = require("body-parser");
 var path = require("path");
 var calculate = require("./modules/calculate.js");
+var result;
 
 app.set("port", 4000);
 
@@ -19,10 +20,15 @@ app.post("/calculate/:x/:y/:type", function(req, res){
   var y = req.params.y;
   var type = req.params.type;
   console.log("x is", x, "\ny is", y, "\ntype is", type, "\n");
-  var result = calculate(x, y, type);
+  result = calculate(x, y, type);
   console.log("result is", result);
   res.sendStatus(200);
 });
+
+app.get("/result", function(req, res){
+  res.send(result);
+});
+
 
 // spin up server
 app.listen(app.get("port"), function() {

@@ -64,10 +64,22 @@ function postCalcObject(calcObject) {
     data: calcObject,
     success: function(response) {
       console.log("Successful post!");
+      console.log("Response is", response);
+      retrieveResult();
     }
   });
 }
 
 // use ajax get to retrieve calculated result from server
+function retrieveResult() {
+  $.ajax({
+    type: "GET",
+    url: "/result",
+    success: function(response) {
+      console.log("Successful get!");
+      console.log("Response is", response);
+    }
+  });
+}
 
 // change result-text to new result

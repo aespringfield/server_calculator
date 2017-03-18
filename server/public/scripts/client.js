@@ -20,10 +20,12 @@ function setOperator() {
   });
 }
 
-// when clear div is clicked, empty old result-text when clear div
+// when clear div is clicked, empty old result-text
 function clearResult() {
   $("#clear").on("click", function() {
     console.log("clear");
+    $(".result-text").empty();
+    $("form").trigger("reset");
   });
 }
 
@@ -35,10 +37,14 @@ function startCalculation() {
     var x = retrieveInput("value1");
     var y = retrieveInput("value2");
     var type = $(this).data("currentOperator");
-    console.log(type);
-    var calcObject = new CalcObject(x, y, type);
-    console.log(calcObject);
-    postCalcObject(calcObject);
+    if (type) {
+      console.log(type);
+      var calcObject = new CalcObject(x, y, type);
+      console.log(calcObject);
+      postCalcObject(calcObject);
+    } else {
+      $(".result-text").text("Please select an operator");
+    }
   });
 }
 
@@ -78,8 +84,15 @@ function retrieveResult() {
     success: function(response) {
       console.log("Successful get!");
       console.log("Response is", response);
+      displayResult(response);
     }
   });
 }
 
 // change result-text to new result
+function displayResult(response) {
+  if (isNaN(response)) {
+    response = "ERROR: input must be number values";
+  }
+  $(".result-text").text(response);
+}

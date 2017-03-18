@@ -3,6 +3,7 @@ var express = require("express");
 var app = express();
 var bodyParser = require("body-parser");
 var path = require("path");
+var calculate = require("./modules/calculate.js");
 
 app.set("port", 4000);
 
@@ -18,6 +19,8 @@ app.post("/calculate/:x/:y/:type", function(req, res){
   var y = req.params.y;
   var type = req.params.type;
   console.log("x is", x, "\ny is", y, "\ntype is", type, "\n");
+  var result = calculate(x, y, type);
+  console.log("result is", result);
   res.sendStatus(200);
 });
 

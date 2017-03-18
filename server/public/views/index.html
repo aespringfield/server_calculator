@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="views/style.css">
+    <script type="text/javascript" src="vendors/jquery.js"></script>
+    <script type="text/javascript" src="scripts/client.js"></script>
+    <title>Calculator</title>
+  </head>
+  <body>
+  <header>
+    <h1>Calculate something!</h1>
+  </header>
+    <div class="container">
+      <div class="calculator">
+        <div class="result">
+          <span class="result-text"></span>
+        </div>
+        <div class="inputs">
+          <input id="value1" type="text" placeholder="value 1">
+          <input id="value2" type="text" placeholder="value 2">
+        </div>
+        <div class="button operator" id="addition" data-operator="add">
+          <span class="operator-symbol">+</span>
+        </div>
+        <div class="button operator" id="subtraction" data-operator="subtract">
+          <span class="operator-symbol">-</span>
+        </div>
+        <div class="button operator" id="multiplication" data-operator="multiply">
+          <span class="operator-symbol">&times;</span>
+        </div>
+        <div class="button operator" id="division" data-operator="divide">
+          <span class="operator-symbol">&divide;</span>
+        </div>
+        <div class="button" id="equals">
+          <span class="operator-symbol">=</span>
+        </div>
+        <div class="button" id="clear">
+          <span class="operator-text">CLEAR</span>
+      </div>
+    </div>
+  </body>
+</html>

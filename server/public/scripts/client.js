@@ -23,10 +23,10 @@ function listenForClicks() {
 function addDigit() {
   $(".number").on("click", function() {
     var digit = $(this).data("value");
-    concatInput(digit);
-    var result = $(".result").data("value");
-    console.log(result);
-    displayResult(result);
+    var displayText = $(".result-text").text();
+    displayText += digit;
+    $(".result-text").text(displayText);
+    console.log("displayText:", displayText);
   });
 }
 
@@ -134,7 +134,7 @@ function concatInput(digit) {
 
 // stores first operand in data-x or data-y in equals div
 function storeOperand(attribute) {
-  var operand = $(".result").data("value");
+  var operand = $(".result-text").text();
   $("#equals").data(attribute, operand);
-  $(".result").data("value", "");
+  $(".result-text").empty();
 }

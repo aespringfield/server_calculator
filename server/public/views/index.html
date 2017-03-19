@@ -13,13 +13,49 @@
   </header>
     <div class="container">
       <div class="calculator">
-        <div class="result">
+        <div class="result" data-value="">
           <span class="result-text"></span>
         </div>
         <form class="inputs">
           <input class="value-input" id="value1" type="text" placeholder="value 1">
           <input class="value-input" id="value2" type="text" placeholder="value 2">
         </form>
+        <div class="numbers">
+          <div class="button number" id="nine" data-value="9">
+            <span class="operator-symbol">9</span>
+          </div>
+          <div class="button number" id="eight" data-value="8">
+            <span class="operator-symbol">8</span>
+          </div>
+          <div class="button number" id="seven" data-value="7">
+            <span class="operator-symbol">7</span>
+          </div>
+          <div class="button number" id="six" data-value="6">
+            <span class="operator-symbol">6</span>
+          </div>
+          <div class="button number" id="five" data-value="5">
+            <span class="operator-symbol">5</span>
+          </div>
+          <div class="button number" id="four" data-value="4">
+            <span class="operator-symbol">4</span>
+          </div>
+          <div class="button number" id="three" data-value="3">
+            <span class="operator-symbol">3</span>
+          </div>
+          <div class="button number" id="two" data-value="2">
+            <span class="operator-symbol">2</span>
+          </div>
+          <div class="button number" id="one" data-value="1">
+            <span class="operator-symbol">1</span>
+          </div>
+          <div class="button number" id="zero" data-value="0">
+            <span class="operator-symbol">0</span>
+          </div>
+          <div class="button number" id="decimal" data-value=".">
+            <span class="operator-symbol">.</span>
+          </div>
+        </div>
+        <div class="operators">
         <div class="button operator" id="addition" data-operator="add">
           <span class="operator-symbol">+</span>
         </div>
@@ -32,7 +68,8 @@
         <div class="button operator" id="division" data-operator="divide">
           <span class="operator-symbol">&divide;</span>
         </div>
-        <div class="button" id="equals">
+      </div>
+        <div class="button" id="equals" data-x="" data-y="" data-type="">
           <span class="operator-symbol">=</span>
         </div>
         <div class="button" id="clear">

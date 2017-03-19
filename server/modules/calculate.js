@@ -1,8 +1,8 @@
 // Takes in first operand (x), second operand (y), and type of operation (type).
 // Returns calculated result.
 function calculate(x, y, type) {
-  x = parseInt(x);
-  y = parseInt(y);
+  x = parseFloat(x);
+  y = parseFloat(y);
   var result;
   switch (type) {
     case "add":

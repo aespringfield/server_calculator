@@ -1,3 +1,10 @@
+// temporary global variables
+var xVal;
+var yVal;
+var typeOp;
+
+var currentCalcObject = new CalcObject(xVal, yVal, typeOp);
+
 // run functions on ready
 $(document).ready(function() {
   listenForClicks();
@@ -6,17 +13,32 @@ $(document).ready(function() {
 
 // event handlers
 function listenForClicks() {
+  addDigit();
   setOperator();
-  clearResult();
   startCalculation();
+  clearResult();
 }
 
-// attach operator to a data value in equals div when clicked
+// when number button is clicked, adds digit to result bar and stores its value
+function addDigit() {
+  $(".number").on("click", function() {
+    var digit = $(this).data("value");
+    concatInput(digit);
+    var result = $(".result").data("value");
+    console.log(result);
+    displayResult(result);
+  });
+}
+
+// attach operator to a data-type attribute in equals div when clicked
+// take data-value from results bar and attach it to data-x in equals div
+// clear results bar & data-value for results bar
 function setOperator() {
   $(".operator").on("click", function() {
     var operator = $(this).data("operator");
     console.log(operator);
-    $("#equals").data("currentOperator", operator);
+    $("#equals").data("type", operator);
+    storeOperand("x");
   });
 }
 
@@ -33,10 +55,11 @@ function clearResult() {
 function startCalculation() {
   $("#equals").on("click", function() {
     console.log("equals");
-    // change below to grab from form?
-    var x = retrieveInput("value1");
-    var y = retrieveInput("value2");
-    var type = $(this).data("currentOperator");
+    storeOperand("y");
+    var x = $(this).data("x");
+    var y = $(this).data("y");
+    var type = $(this).data("type");
+    console.log("x:", x, "; y", y, "; type:", type);
     if (type) {
       console.log(type);
       var calcObject = new CalcObject(x, y, type);
@@ -84,15 +107,34 @@ function retrieveResult() {
     success: function(response) {
       console.log("Successful get!");
       console.log("Response is", response);
-      displayResult(response);
+      displayResult(checkNaN(response));
     }
   });
 }
 
-// change result-text to new result
-function displayResult(response) {
+// checks if response is not a number and changes response accordingly
+function checkNaN(response) {
   if (isNaN(response)) {
     response = "ERROR: input must be number values";
   }
+  return response;
+}
+
+// change result-text to new result
+function displayResult(response) {
   $(".result-text").text(response);
+}
+
+// concatenate digits entered by user with existing data-value in results bar
+function concatInput(digit) {
+  var $result = $(".result");
+  var inputSoFar = $result.data("value");
+  $result.data("value", inputSoFar + digit);
+}
+
+// stores first operand in data-x or data-y in equals div
+function storeOperand(attribute) {
+  var operand = $(".result").data("value");
+  $("#equals").data(attribute, operand);
+  $(".result").data("value", "");
 }

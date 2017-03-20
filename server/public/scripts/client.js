@@ -1,9 +1,5 @@
-// temporary global variables
-var xVal;
-var yVal;
-var typeOp;
-
-var currentCalcObject = new CalcObject(xVal, yVal, typeOp);
+// timer
+var timer;
 
 // run functions on ready
 $(document).ready(function() {
@@ -15,18 +11,21 @@ $(document).ready(function() {
 function listenForClicks() {
   addDigit();
   setOperator();
-  startCalculation();
-  clearResult();
+  checkForEquals();
+  checkForClear();
 }
 
 // when number button is clicked, adds digit to result bar and stores its value
 function addDigit() {
   $(".number").on("click", function() {
+    if ($(".result").data("result")) {
+      $(".result").data("result", "");
+    }
     var digit = $(this).data("value");
-    var displayText = $(".result-text").text();
-    displayText += digit;
-    $(".result-text").text(displayText);
-    console.log("displayText:", displayText);
+    concatInput(digit);
+    var result = $(".result").data("value");
+    console.log(result);
+    displayResult(result);
   });
 }
 
@@ -35,40 +34,85 @@ function addDigit() {
 // clear results bar & data-value for results bar
 function setOperator() {
   $(".operator").on("click", function() {
+    clearOrContinue();
     var operator = $(this).data("operator");
-    console.log(operator);
-    $("#equals").data("type", operator);
-    storeOperand("x");
+    var result = $(this).data("result");
+    if (!($(".result").data("value"))) {
+      clearResult();
+      console.log("setOperator clear");
+      $(".result-text").text("ERROR: Cannot select operator before first input");
+    } else if ($(".result").data("x")) {
+      if (result) {
+        console.log($(".result").data("x"),$(".result").data("y"));
+        $(".result").data("x", result);
+      } else {
+        console.log($(".result").data("x"),$(".result").data("y"));
+        storeOperand("y");
+        makeCalculation();
+        $(".result").data("type", operator);
+      }
+    } else {
+      storeOperand("x");
+      $(".result").data("type", operator);
+    }
   });
 }
 
 // when clear div is clicked, empty old result-text
-function clearResult() {
+function checkForClear() {
   $("#clear").on("click", function() {
-    console.log("clear");
-    $(".result-text").empty();
-    $("form").trigger("reset");
+    clearResult();
   });
 }
 
+function clearResult() {
+  console.log("clear");
+  $(".result-text").empty();
+  $(".result").data("result", "");
+  $(".result").data("x", "");
+  $(".result").data("y", "");
+  $(".result").data("type", "");
+}
+
 // when equals div is clicked, create calculation object and send to server
-function startCalculation() {
+// if there are not 2 valid inputs, returns false, clears input, and displays an error message
+function makeCalculation() {
+  console.log("calculating");
+  var calcObject = createCalcObject();
+  if (checkInput(calcObject.x, calcObject.y)) {
+    console.log("x:", calcObject.x, "; y:", calcObject.y, "; type:", calcObject.type);
+    postCalcObject(calcObject);
+  } else {
+    clearResult();
+    console.log("makeCalculation clear");
+    $(".result-text").text("ERROR: Must have 2 number inputs");
+  }
+}
+
+function checkForEquals() {
   $("#equals").on("click", function() {
-    console.log("equals");
     storeOperand("y");
-    var x = $(this).data("x");
-    var y = $(this).data("y");
-    var type = $(this).data("type");
-    console.log("x:", x, "; y", y, "; type:", type);
-    if (type) {
-      console.log(type);
-      var calcObject = new CalcObject(x, y, type);
-      console.log(calcObject);
-      postCalcObject(calcObject);
-    } else {
-      $(".result-text").text("Please select an operator");
-    }
+    makeCalculation();
   });
+}
+
+// create object to post to server with 2 inputs and operation type
+function createCalcObject() {
+  var $result = $(".result");
+  var x = $result.data("x");
+  var y = $result.data("y");
+  var type = $result.data("type");
+  var calcObject = new CalcObject(x, y, type);
+  return calcObject;
+}
+
+// check 2 inputs to see if they both exist and are numbers
+function checkInput(x, y) {
+  if (isNaN(parseFloat(x)) || isNaN(parseFloat(y))) {
+    return false;
+  } else {
+    return true;
+  }
 }
 
 // retrieve value from input field and convert to number
@@ -92,32 +136,42 @@ function postCalcObject(calcObject) {
     url: "/calculate/" + calcObject.x + "/" + calcObject.y + "/" + calcObject.type,
     data: calcObject,
     success: function(response) {
-      console.log("Successful post!");
-      console.log("Response is", response);
-      retrieveResult();
+      timer = setInterval(retrieveResult, 3000);
+      displayResult("CALCULATING...");
     }
   });
 }
 
 // use ajax get to retrieve calculated result from server
 function retrieveResult() {
+  clearInterval(timer);
   $.ajax({
     type: "GET",
     url: "/result",
     success: function(response) {
-      console.log("Successful get!");
-      console.log("Response is", response);
-      displayResult(checkNaN(response));
+      displayResult(response);
+      $(".result").data("result", response);
+      console.log("result:", response);
     }
   });
 }
 
-// checks if response is not a number and changes response accordingly
-function checkNaN(response) {
-  if (isNaN(response)) {
-    response = "ERROR: input must be number values";
+// checks to see if a result has just been returned & stores it in a variable
+// either clears all results or keeps result as first parameter
+function clearOrContinue() {
+  var result = $(".result").data("result");
+  if (result) {
+    clearResult();
+    console.log("clearOrContinue clear");
+    $(".result").data("value", result);
+  // } else {
+  //   var x = $(".result").data("x");
+  //   var y = $(".result").data("y");
+  //   if (checkInput(x, y)) {
+  //     storeOperand("y");
+  //     makeCalculation();
+  //   }
   }
-  return response;
 }
 
 // change result-text to new result
@@ -134,7 +188,7 @@ function concatInput(digit) {
 
 // stores first operand in data-x or data-y in equals div
 function storeOperand(attribute) {
-  var operand = $(".result-text").text();
-  $("#equals").data(attribute, operand);
-  $(".result-text").empty();
+  var operand = $(".result").data("value");
+  $(".result").data(attribute, operand);
+  $(".result").data("value", "");
 }

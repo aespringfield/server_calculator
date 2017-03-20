@@ -2,6 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <link href="https://fonts.googleapis.com/css?family=Maven+Pro|Noto+Sans" rel="stylesheet">
     <link rel="stylesheet" href="views/style.css">
     <script type="text/javascript" src="vendors/jquery.js"></script>
     <script type="text/javascript" src="scripts/client.js"></script>
@@ -13,13 +14,9 @@
   </header>
     <div class="container">
       <div class="calculator">
-        <div class="result" data-value="">
+        <div class="result" data-value="" data-result="" data-x="" data-y="" data-type="">
           <span class="result-text"></span>
         </div>
-        <form class="inputs">
-          <input class="value-input" id="value1" type="text" placeholder="value 1">
-          <input class="value-input" id="value2" type="text" placeholder="value 2">
-        </form>
         <div class="numbers">
           <div class="button number" id="nine" data-value="9">
             <span class="operator-symbol">9</span>
@@ -69,7 +66,7 @@
           <span class="operator-symbol">&divide;</span>
         </div>
       </div>
-        <div class="button" id="equals" data-x="" data-y="" data-type="">
+        <div class="button" id="equals">
           <span class="operator-symbol">=</span>
         </div>
         <div class="button" id="clear">

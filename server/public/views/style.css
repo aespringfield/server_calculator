@@ -37,6 +37,9 @@ header {
   cursor: pointer;
 }
 
+#equals {
+  width: 330px;
+}
 
 .operator-symbol {
   font-size: 40px;

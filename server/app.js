@@ -19,9 +19,9 @@ app.post("/calculate/:x/:y/:type", function(req, res){
   var x = req.params.x;
   var y = req.params.y;
   var type = req.params.type;
-  console.log("x is", x, "\ny is", y, "\ntype is", type, "\n");
+  console.log("x is", x, "\ny is", y, "\ntype is", type);
   result = calculate(x, y, type);
-  console.log("result is", result);
+  console.log("result is", result, "\n");
   res.sendStatus(200);
 });
 

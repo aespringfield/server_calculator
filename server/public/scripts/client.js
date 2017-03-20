@@ -23,9 +23,8 @@ function addDigit() {
     }
     var digit = $(this).data("value");
     concatInput(digit);
-    var result = $(".result").data("value");
-    console.log(result);
-    displayResult(result);
+    var newValue = $(".result").data("value");
+    displayResult(newValue);
   });
 }
 
@@ -34,25 +33,18 @@ function addDigit() {
 // clear results bar & data-value for results bar
 function setOperator() {
   $(".operator").on("click", function() {
-    clearOrContinue();
-    var operator = $(this).data("operator");
-    var result = $(this).data("result");
-    if (!($(".result").data("value"))) {
-      clearResult();
-      console.log("setOperator clear");
-      $(".result-text").text("ERROR: Cannot select operator before first input");
-    } else if ($(".result").data("x")) {
-      if (result) {
-        console.log($(".result").data("x"),$(".result").data("y"));
-        $(".result").data("x", result);
-      } else {
-        console.log($(".result").data("x"),$(".result").data("y"));
-        storeOperand("y");
-        makeCalculation();
-        $(".result").data("type", operator);
-      }
+    if ($(".result").data("result")) {
+      $(".result").data("result", "");
+    }
+    if($(".result").data("x")) {
+      clearAll();
+      $(".result-text").text("ERROR: Cannot select multiple operators");
+    } else if ($(".result").data("value") === "") {
+      clearAll();
+      $(".result-text").text("ERROR: Must select first input");
     } else {
       storeOperand("x");
+      var operator = $(this).data("operator");
       $(".result").data("type", operator);
     }
   });
@@ -61,14 +53,15 @@ function setOperator() {
 // when clear div is clicked, empty old result-text
 function checkForClear() {
   $("#clear").on("click", function() {
-    clearResult();
+    console.log("clear");
+    clearAll();
   });
 }
 
-function clearResult() {
-  console.log("clear");
+function clearAll() {
   $(".result-text").empty();
   $(".result").data("result", "");
+  $(".result").data("value", "");
   $(".result").data("x", "");
   $(".result").data("y", "");
   $(".result").data("type", "");
@@ -83,8 +76,7 @@ function makeCalculation() {
     console.log("x:", calcObject.x, "; y:", calcObject.y, "; type:", calcObject.type);
     postCalcObject(calcObject);
   } else {
-    clearResult();
-    console.log("makeCalculation clear");
+    clearAll();
     $(".result-text").text("ERROR: Must have 2 number inputs");
   }
 }
@@ -149,29 +141,12 @@ function retrieveResult() {
     type: "GET",
     url: "/result",
     success: function(response) {
+      clearAll();
       displayResult(response);
       $(".result").data("result", response);
       console.log("result:", response);
     }
   });
-}
-
-// checks to see if a result has just been returned & stores it in a variable
-// either clears all results or keeps result as first parameter
-function clearOrContinue() {
-  var result = $(".result").data("result");
-  if (result) {
-    clearResult();
-    console.log("clearOrContinue clear");
-    $(".result").data("value", result);
-  // } else {
-  //   var x = $(".result").data("x");
-  //   var y = $(".result").data("y");
-  //   if (checkInput(x, y)) {
-  //     storeOperand("y");
-  //     makeCalculation();
-  //   }
-  }
 }
 
 // change result-text to new result
